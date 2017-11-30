@@ -151,7 +151,6 @@ public class Utils {
                 viewWidth / 2f,
                 viewHeight / 2f);
     }
-
     /**
      * Check if given buffer begins with a NALU header.
      * @param buffer the buffer to check.
@@ -159,6 +158,16 @@ public class Utils {
      */
     public static boolean hasNALUHeader(byte[] buffer)
     {
-        return Arrays.equals(Arrays.copyOfRange(buffer, 0, 4), NALU_HEADER);
+        return hasNALUHeader(buffer, 0);
+    }
+
+    /**
+     * Check if given buffer begins with a NALU header.
+     * @param buffer the buffer to check.
+     * @param offset offset of the buffer
+     * @return true if the buffer does contain the header, otherwise false.
+     */
+    public static boolean hasNALUHeader(byte[] buffer, int offset) {
+        return Arrays.equals(Arrays.copyOfRange(buffer, offset, offset + 4), NALU_HEADER);
     }
 }

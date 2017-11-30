@@ -2,6 +2,7 @@ package com.steinwurf.mediaplayer;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +50,8 @@ public class VideoData implements SampleProvider
             5300000, 5333333, 5366666, 5400000, 5433333, 5466666, 5500000, 5533333
     };
 
-    private final List<byte[]> samples = new ArrayList<>();
+    private final byte[] data;
 
-    private int currentSample = 0;
 
     final byte[] sps = toBytes(
             0x00, 0x00, 0x00, 0x01, 0x67, 0x42, 0xC0, 0x1e, 0xd9, 0x00, 0x8c, 0x29, 0xb0,
@@ -72,46 +72,39 @@ public class VideoData implements SampleProvider
             e.printStackTrace();
         }
 
-        byte[] data = new byte[bytes];
+        data = new byte[bytes];
 
         try {
             inputStream.read(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        int sampleStart = 0;
-        int nalus = 0;
-        for (int i = 4; i < data.length; i++) {
-            if (data.length - i > 4)
-            {
-                if (data[i] == 0x00 && data[i+1] == 0x00 && data[i+2] == 0x00 && data[i+3] == 0x01)
-                {
-                    nalus += 1;
-                    if (nalusPerSample[samples.size()] == nalus)
-                    {
-                        samples.add(Arrays.copyOfRange(data, sampleStart, i -1));
-                        sampleStart = i;
-                        nalus = 0;
-                    }
-                }
-            }
-        }
-        samples.add(Arrays.copyOfRange(data, sampleStart, data.length));
-        if (samples.size() != timestamps.length)
-            throw new AssertionError(samples.size() + " != " + timestamps.length);
     }
+
+    private int sampleOffset = 0;
+    private int sampleCount = 0;
 
     @Override
     public boolean hasSample() {
-        return currentSample != samples.size();
+        return sampleOffset != data.length;
     }
 
     @Override
     public Sample getSample() {
-        byte[] data = samples.get(currentSample);
-        long timestamp = timestamps[currentSample];
-        currentSample++;
-        return new Sample(timestamp, data);
+        int NALUs = 0;
+        int offset = sampleOffset;
+        for (; offset < data.length; offset++) {
+            if (offset + 4 < data.length && Utils.hasNALUHeader(data, offset)) {
+                NALUs += 1;
+                if (nalusPerSample[sampleCount] < NALUs) {
+                    break;
+                }
+            }
+        }
+        long timestamp = timestamps[sampleCount];
+        byte[] buffer = Arrays.copyOfRange(data, sampleOffset, offset);
+        sampleCount++;
+        sampleOffset = offset;
+        return new Sample(timestamp, buffer);
     }
 }
