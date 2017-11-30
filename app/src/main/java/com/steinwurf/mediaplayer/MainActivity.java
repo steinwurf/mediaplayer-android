@@ -1,25 +1,22 @@
 package com.steinwurf.mediaplayer;
+/*-
+ * Copyright (c) 2017 Steinwurf ApS
+ * All Rights Reserved
+ *
+ * Distributed under the "BSD License". See the accompanying LICENSE.rst file.
+ */
 
 import android.graphics.SurfaceTexture;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-
-    private Button playButton;
     private Surface mSurface = null;
     private VideoDecoder mVideoDecoder;
 
@@ -29,21 +26,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         hideUI();
-        playButton = findViewById(R.id.playButton);
-        playButton.setEnabled(false);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startVideoPlayback();
-            }
-        });
         TextureView videoTextureView = findViewById(R.id.videoTextureView);
+
+
         videoTextureView.setSurfaceTextureListener(new TextureViewSurfaceTextureListener());
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        VideoData videoData = new VideoData(this);
+        mVideoDecoder = VideoDecoder.build(
+                videoData.width,
+                videoData.height,
+                videoData.sps,
+                videoData.pps,
+                videoData);
+        if (mSurface != null)
+            startVideoPlayback();
     }
 
     @Override
@@ -53,17 +54,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startVideoPlayback() {
-        VideoData videoData = new VideoData(this);
-        if (mVideoDecoder != null)
-            stopVideoPlayback();
-
-        mVideoDecoder = VideoDecoder.build(
-                videoData.width,
-                videoData.height,
-                videoData.sps,
-                videoData.pps,
-                videoData);
-
         mVideoDecoder.setSurface(mSurface);
         mVideoDecoder.start();
     }
@@ -81,7 +71,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
             mSurface = new Surface(surfaceTexture);
-            playButton.setEnabled(true);
+            if (mVideoDecoder != null)
+            {
+                startVideoPlayback();
+            }
         }
 
         @Override

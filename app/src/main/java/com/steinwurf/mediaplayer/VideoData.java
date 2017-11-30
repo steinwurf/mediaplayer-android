@@ -1,15 +1,25 @@
 package com.steinwurf.mediaplayer;
+/*-
+ * Copyright (c) 2017 Steinwurf ApS
+ * All Rights Reserved
+ *
+ * Distributed under the "BSD License". See the accompanying LICENSE.rst file.
+ */
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+/**
+ * Class providing the video data.
+ * The content is extracted from a real video file using the mp4 parsing library petro
+ * https://github.com/steinwurf/petro
+ * Android bindings are available here:
+ * https://github.com/steinwurf/petro-android
+ */
 public class VideoData implements SampleProvider
 {
     private static byte[] toBytes(int... ints) {
@@ -20,16 +30,19 @@ public class VideoData implements SampleProvider
         return result;
     }
 
-    private final int[] nalusPerSample = {
-            5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+    private final static int[] nalusPerSample = {
+            5,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
     };
 
-    private final int[] timestamps = {
+    private final static long mediaDuration = 5588888;
+    private final static int[] timestamps = {
             33333, 66666, 100000, 133333, 166666, 200000, 233333, 266666, 300000, 333333, 366666,
             400000, 433333, 466666, 500000, 533333, 566666, 600000, 633333, 666666, 700000, 733333,
             766666, 800000, 833333, 866666, 900000, 933333, 966666, 1000000, 1033333, 1066666,
@@ -50,43 +63,41 @@ public class VideoData implements SampleProvider
             5300000, 5333333, 5366666, 5400000, 5433333, 5466666, 5500000, 5533333
     };
 
-    private final byte[] data;
-
-
     final byte[] sps = toBytes(
             0x00, 0x00, 0x00, 0x01, 0x67, 0x42, 0xC0, 0x1e, 0xd9, 0x00, 0x8c, 0x29, 0xb0,
             0x11, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x03, 0x00, 0x3c, 0x8f, 0x16, 0x2e,
             0x48);
+
     final byte[] pps = toBytes(0x00, 0x00, 0x00, 0x01, 0x68, 0xcb, 0x8c, 0xb2);
+
     final int width = 560;
     final int height = 320;
+
+    private final byte[] data;
+
+    private int sampleOffset = 0;
+    private int sampleCount = 0;
+    private long timestampOffset = 0;
 
     VideoData(Context context)
     {
         Resources res = context.getResources();
         InputStream inputStream = res.openRawResource(R.raw.samples);
-        int bytes = 0;
+        byte[] data;
         try {
-            bytes = inputStream.available();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        data = new byte[bytes];
-
-        try {
+            data = new byte[inputStream.available()];
+            //noinspection ResultOfMethodCallIgnored
             inputStream.read(data);
         } catch (IOException e) {
             e.printStackTrace();
+            throw new AssertionError("Unable to read resource file");
         }
+        this.data = data;
     }
-
-    private int sampleOffset = 0;
-    private int sampleCount = 0;
 
     @Override
     public boolean hasSample() {
-        return sampleOffset != data.length;
+        return true;
     }
 
     @Override
@@ -101,10 +112,17 @@ public class VideoData implements SampleProvider
                 }
             }
         }
-        long timestamp = timestamps[sampleCount];
+        long timestamp = timestamps[sampleCount] + timestampOffset;
         byte[] buffer = Arrays.copyOfRange(data, sampleOffset, offset);
         sampleCount++;
         sampleOffset = offset;
-        return new Sample(timestamp, buffer);
+        Sample sample = new Sample(timestamp, buffer);
+        if (sampleOffset == data.length)
+        {
+            sampleOffset = 0;
+            sampleCount = 0;
+            timestampOffset += mediaDuration;
+        }
+        return sample;
     }
 }

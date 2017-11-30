@@ -1,4 +1,10 @@
 package com.steinwurf.mediaplayer;
+/*-
+ * Copyright (c) 2017 Steinwurf ApS
+ * All Rights Reserved
+ *
+ * Distributed under the "BSD License". See the accompanying LICENSE.rst file.
+ */
 
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -45,7 +51,7 @@ public class VideoDecoder extends Decoder {
      * @param pps The PPS buffer with a NALU header present.
      * @param sampleProvider The sample provider
      * @return {@link VideoDecoder}
-     * @throws IllegalArgumentException If SPS or PPS buffers does not contain NALU header.
+     * @throws IllegalArgumentException If SPS or PPS buffers does not include NALU header.
      */
     public static VideoDecoder build(
             int width,

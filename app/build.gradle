@@ -8,7 +8,6 @@ android {
         targetSdkVersion project.ext.targetSdkVersion
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
