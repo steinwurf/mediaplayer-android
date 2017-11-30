@@ -6,7 +6,7 @@ every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: AudioDecoder::build can no longer return null.
 
 7.0.0
 -----

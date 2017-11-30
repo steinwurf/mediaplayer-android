@@ -33,7 +33,7 @@ public class AudioDecoder extends Decoder {
      * @param sampleRateIndex The sample rate Index
      * @param channelCount The number of channels
      * @param sampleProvider The sample provider
-     * @return a constructed AudioDecoder or null upon failure.
+     * @return a constructed AudioDecoder
      */
     public static AudioDecoder build(
             int audioProfile, int sampleRateIndex, int channelCount, SampleProvider sampleProvider)
@@ -41,13 +41,6 @@ public class AudioDecoder extends Decoder {
         int sampleRate = SAMPLE_RATES[sampleRateIndex];
 
         MediaFormat format = MediaFormat.createAudioFormat(MIME, sampleRate, channelCount);
-
-        if (format == null)
-        {
-            Log.e(TAG, "Can't create format!");
-            return null;
-        }
-
         ByteBuffer csd = ByteBuffer.allocate(2);
         csd.put((byte) ((audioProfile << 3) | (sampleRateIndex >> 1)));
         csd.position(1);
