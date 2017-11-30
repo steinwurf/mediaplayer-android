@@ -1,4 +1,4 @@
-package com.steinwurf.mediaplayer;
+package com.steinwurf.mediaplayer.app;
 /*-
  * Copyright (c) 2017 Steinwurf ApS
  * All Rights Reserved
@@ -8,6 +8,11 @@ package com.steinwurf.mediaplayer;
 
 import android.content.Context;
 import android.content.res.Resources;
+
+import com.steinwurf.mediaplayer.R;
+import com.steinwurf.mediaplayer.Sample;
+import com.steinwurf.mediaplayer.SampleProvider;
+import com.steinwurf.mediaplayer.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;

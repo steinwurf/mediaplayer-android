@@ -7,5 +7,5 @@ mediaplayer-android
 .. image:: http://buildbot.steinwurf.dk/svgstatus?project=mediaplayer-android
     :target: http://buildbot.steinwurf.dk/stats?projects=mediaplayer-android
 
-Library for playback of raw data buffers as media. Currently AAC and H264 is
+Android library for playback of raw data buffers as media. Currently AAC and H264 is
 supported.

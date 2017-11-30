@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion project.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.steinwurf.mediaplayer"
+        applicationId "com.steinwurf.mediaplayer.app"
         minSdkVersion 16
         targetSdkVersion project.ext.targetSdkVersion
         versionCode androidGitVersion.code()

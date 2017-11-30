@@ -1,4 +1,4 @@
-package com.steinwurf.mediaplayer;
+package com.steinwurf.mediaplayer.app;
 /*-
  * Copyright (c) 2017 Steinwurf ApS
  * All Rights Reserved
@@ -14,6 +14,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.steinwurf.mediaplayer.R;
+import com.steinwurf.mediaplayer.VideoDecoder;
 
 public class MainActivity extends AppCompatActivity {
 
