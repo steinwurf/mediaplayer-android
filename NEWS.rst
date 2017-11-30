@@ -6,4 +6,7 @@ every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Major: Use androidGitVersion for setting the version of the apps and
+  libraries automatically.
+* Major: Bump version to 7 since the library version follows the git tag (and
+  the latest version was 6.0.0).
