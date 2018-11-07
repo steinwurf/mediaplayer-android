@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class UtilsUnitTest {
     @Test
-    public void aspectRatio_isCorrect() throws Exception {
+    public void aspectRatio_isCorrect() {
         {
             int width = 2;
             int height = 1;
@@ -22,7 +22,7 @@ public class UtilsUnitTest {
     }
 
     @Test
-    public void fitScale_isCorrect() throws Exception {
+    public void fitScale_isCorrect() {
         {
             int videoWidth = 100;
             int videoHeight = 100;
@@ -61,7 +61,7 @@ public class UtilsUnitTest {
     }
 
     @Test
-    public void fillScale_isCorrect() throws Exception {
+    public void fillScale_isCorrect() {
         {
             int videoWidth = 100;
             int videoHeight = 100;

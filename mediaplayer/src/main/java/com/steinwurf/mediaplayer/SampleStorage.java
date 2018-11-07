@@ -6,6 +6,8 @@ package com.steinwurf.mediaplayer;
  * Distributed under the "BSD License". See the accompanying LICENSE.rst file.
  */
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,12 +20,33 @@ public class SampleStorage implements SampleProvider
     /**
      * Adds a sample to the storage (this operation is synchronized)
      * @param timestamp timestamp in microseconds
+     * @param buffer data buffer
+     */
+    public synchronized void addSample(long timestamp, ByteBuffer buffer)
+    {
+        // The samples list is synchronized, so it can be accessed from multiple threads
+        addSample(new Sample(timestamp, Arrays.copyOfRange(buffer.array(), 0, buffer.remaining())));
+    }
+
+    /**
+     * Adds a sample to the storage (this operation is synchronized)
+     * @param timestamp timestamp in microseconds
      * @param data data buffer
      */
     public synchronized void addSample(long timestamp, byte[] data)
     {
         // The samples list is synchronized, so it can be accessed from multiple threads
-        samples.add(new Sample(timestamp, data.clone()));
+        addSample(new Sample(timestamp, data.clone()));
+    }
+
+    /**
+     * Adds a sample to the storage (this operation is synchronized)
+     * @param sample The sample to add
+     */
+    public synchronized void addSample(Sample sample)
+    {
+        // The samples list is synchronized, so it can be accessed from multiple threads
+        samples.add(sample);
     }
 
     /**

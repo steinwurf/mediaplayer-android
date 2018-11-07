@@ -18,7 +18,7 @@ import android.view.WindowManager;
 import com.steinwurf.mediaplayer.R;
 import com.steinwurf.mediaplayer.VideoDecoder;
 
-public class MainActivity extends AppCompatActivity {
+public class VideoActivity extends AppCompatActivity {
 
     private Surface mSurface = null;
     private VideoDecoder mVideoDecoder;

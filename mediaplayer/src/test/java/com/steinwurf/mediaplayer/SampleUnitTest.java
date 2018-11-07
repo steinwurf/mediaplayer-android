@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SampleUnitTest {
     @Test
-    public void constructor_isCorrect() throws Exception {
+    public void constructor_isCorrect() {
 
         long timestamp = 1337;
         byte [] data = new byte[]{0x01, 0x03, 0x03, 0x07};
