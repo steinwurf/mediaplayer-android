@@ -22,7 +22,7 @@ public class SampleStorage implements SampleProvider
      * @param timestamp timestamp in microseconds
      * @param buffer data buffer
      */
-    public synchronized void addSample(long timestamp, ByteBuffer buffer)
+    public void addSample(long timestamp, ByteBuffer buffer)
     {
         // The samples list is synchronized, so it can be accessed from multiple threads
         addSample(new Sample(timestamp, Arrays.copyOfRange(buffer.array(), 0, buffer.remaining())));
@@ -33,7 +33,7 @@ public class SampleStorage implements SampleProvider
      * @param timestamp timestamp in microseconds
      * @param data data buffer
      */
-    public synchronized void addSample(long timestamp, byte[] data)
+    public void addSample(long timestamp, byte[] data)
     {
         // The samples list is synchronized, so it can be accessed from multiple threads
         addSample(new Sample(timestamp, data.clone()));
