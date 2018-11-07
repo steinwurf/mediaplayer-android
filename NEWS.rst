@@ -6,6 +6,9 @@ every change, see the Git log.
 
 Latest
 ------
+
+7.1.0
+-----
 * Minor: SampleStorage now takes ``ByteBuffer`` and ``Sample`` as well as ``byte[]``.
 * Minor: AudioDecoder::build can no longer return null.
 
