@@ -2,6 +2,8 @@ package com.steinwurf.mediaplayer;
 
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 public class SampleStorageUnitTest {
 
     @Test
-    public void sampleStorage_api() throws Exception {
+    public void sampleStorage_api() {
 
         long timestamp1 = 1337;
         byte [] data1 = new byte[]{1, 3, 3, 7};
@@ -39,6 +41,16 @@ public class SampleStorageUnitTest {
         assertTrue(sampleStorage.hasSample());
         assertEquals(1, sampleStorage.sampleCount());
 
+        {
+            Sample sample2 = sampleStorage.getSample();
+            assertEquals(timestamp2, sample2.timestamp);
+            assertEquals(data2.length, sample2.data.length);
+            assertArrayEquals(data2, sample2.data);
+        }
+
+        sampleStorage.addSample(timestamp2, ByteBuffer.wrap(data2));
+        assertTrue(sampleStorage.hasSample());
+        assertEquals(1, sampleStorage.sampleCount());
         {
             Sample sample2 = sampleStorage.getSample();
             assertEquals(timestamp2, sample2.timestamp);
