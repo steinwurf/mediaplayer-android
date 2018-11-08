@@ -102,7 +102,8 @@ public enum NaluType {
 
 
     /**
-     * Parses the NALU header and returns the NALU type.
+     * Parses the ANNEX B start code and returns the NALU type.
+     * The position of the given ByteBuffer will be moved on a successful parse
      * @param buffer The buffer containing the NALU
      * @return the NALU type.
      */
