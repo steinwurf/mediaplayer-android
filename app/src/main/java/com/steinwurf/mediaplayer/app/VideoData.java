@@ -8,7 +8,9 @@ package com.steinwurf.mediaplayer.app;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
+import com.steinwurf.mediaplayer.NaluType;
 import com.steinwurf.mediaplayer.R;
 import com.steinwurf.mediaplayer.Sample;
 import com.steinwurf.mediaplayer.SampleProvider;
@@ -16,6 +18,7 @@ import com.steinwurf.mediaplayer.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -78,9 +81,8 @@ public class VideoData implements SampleProvider
     final int width = 560;
     final int height = 320;
 
-    private final byte[] data;
+    private final ByteBuffer data;
 
-    private int sampleOffset = 0;
     private int sampleCount = 0;
     private long timestampOffset = 0;
 
@@ -97,7 +99,7 @@ public class VideoData implements SampleProvider
             e.printStackTrace();
             throw new AssertionError("Unable to read resource file");
         }
-        this.data = data;
+        this.data = ByteBuffer.wrap(data);
     }
 
     @Override
@@ -108,25 +110,32 @@ public class VideoData implements SampleProvider
     @Override
     public Sample getSample() {
         int NALUs = 0;
-        int offset = sampleOffset;
-        for (; offset < data.length; offset++) {
-            if (offset + 4 < data.length && Utils.hasNALUHeader(data, offset)) {
-                NALUs += 1;
+        int offset = data.position();
+        while(data.hasRemaining())
+        {
+            data.mark();
+            if (NaluType.parseAnnexBStartCode(data))
+            {
+                NALUs++;
                 if (nalusPerSample[sampleCount] < NALUs) {
+                    data.reset();
                     break;
                 }
             }
+            else
+            {
+                data.position(data.position() + 1);
+            }
         }
         long timestamp = timestamps[sampleCount] + timestampOffset;
-        byte[] buffer = Arrays.copyOfRange(data, sampleOffset, offset);
+        byte[] buffer = Arrays.copyOfRange(data.array(), offset, data.position());
         sampleCount++;
-        sampleOffset = offset;
         Sample sample = new Sample(timestamp, buffer);
-        if (sampleOffset == data.length)
+        if (!data.hasRemaining())
         {
-            sampleOffset = 0;
             sampleCount = 0;
             timestampOffset += mediaDuration;
+            data.clear();
         }
         return sample;
     }

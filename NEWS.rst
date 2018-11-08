@@ -6,6 +6,9 @@ every change, see the Git log.
 
 Latest
 ------
+* Minor: Added ``NaluType`` enum for parsing and managing different NALU types.
+* Major: Moved and renamed ``Utils.hasNALUHeader`` to
+  ``NaluType.NaluType.parseAnnexBStartCode``.
 
 7.1.0
 -----

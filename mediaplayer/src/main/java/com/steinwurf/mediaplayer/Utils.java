@@ -19,11 +19,6 @@ import java.util.Arrays;
 public class Utils {
 
     /**
-     * A buffer containing a NALU header
-     */
-    public static final byte[] NALU_HEADER = new byte[]{0x00, 0x00, 0x00, 0x01};
-
-    /**
      * Returns the default display Metrics as a {@link Point}.
      * @param activity The activity.
      * @return the default display Metrics as a {@link Point}.
@@ -156,24 +151,5 @@ public class Utils {
                 scaledHeight / viewHeight,
                 viewWidth / 2f,
                 viewHeight / 2f);
-    }
-    /**
-     * Check if given buffer begins with a NALU header.
-     * @param buffer the buffer to check.
-     * @return true if the buffer does contain the header, otherwise false.
-     */
-    public static boolean hasNALUHeader(byte[] buffer)
-    {
-        return hasNALUHeader(buffer, 0);
-    }
-
-    /**
-     * Check if given buffer begins with a NALU header.
-     * @param buffer the buffer to check.
-     * @param offset offset of the buffer
-     * @return true if the buffer does contain the header, otherwise false.
-     */
-    public static boolean hasNALUHeader(byte[] buffer, int offset) {
-        return Arrays.equals(Arrays.copyOfRange(buffer, offset, offset + 4), NALU_HEADER);
     }
 }
