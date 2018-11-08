@@ -36,8 +36,8 @@ public class VideoDecoder extends Decoder {
         @Override
         public Sample getSample() {
             Sample sample = sampleProvider.getSample();
-            if (!Utils.hasNALUHeader(sample.data)) {
-                Log.e(TAG, "No NALU header before sample");
+            if (!NaluType.parseAnnexBStartCode(sample.data)) {
+                Log.e(TAG, "Sample missing ANNEX B start code.");
             }
             return sample;
         }
@@ -60,11 +60,11 @@ public class VideoDecoder extends Decoder {
             byte[] pps,
             SampleProvider sampleProvider) throws IllegalArgumentException
     {
-        if (!Utils.hasNALUHeader(sps)) {
-            throw new IllegalArgumentException("SPS buffer does not begin with NALU header.");
+        if (!NaluType.parseAnnexBStartCode(sps)) {
+            throw new IllegalArgumentException("SPS buffer does not begin with ANNEX B start code.");
         }
-        if (!Utils.hasNALUHeader(pps)) {
-            throw new IllegalArgumentException("PPS buffer does not begin with NALU header.");
+        if (!NaluType.parseAnnexBStartCode(pps)) {
+            throw new IllegalArgumentException("PPS buffer does not begin with ANNEX B start code.");
         }
 
         MediaFormat format = MediaFormat.createVideoFormat(MIME, width, height);
