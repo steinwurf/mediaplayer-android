@@ -6,6 +6,10 @@ every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+8.0.0
+-----
 * Minor: Added ``NaluType`` enum for parsing and managing different NALU types.
 * Major: Moved and renamed ``Utils.hasNALUHeader`` to
   ``NaluType.NaluType.parseAnnexBStartCode``.
