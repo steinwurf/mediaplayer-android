@@ -124,7 +124,7 @@ public class VideoData implements SampleProvider
             }
             else
             {
-                data.get();
+                data.position(data.position() + 1);
             }
         }
         long timestamp = timestamps[sampleCount] + timestampOffset;
