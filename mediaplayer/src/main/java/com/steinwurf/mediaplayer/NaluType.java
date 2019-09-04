@@ -3,13 +3,10 @@ package com.steinwurf.mediaplayer;
  * Copyright (c) 2017 Steinwurf ApS
  * All Rights Reserved
  *
- * THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF STEINWURF
- * The copyright notice above does not evidence any
- * actual or intended publication of such source code.
+ * Distributed under the "BSD License". See the accompanying LICENSE.rst file.
  */
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * NALU Type enum

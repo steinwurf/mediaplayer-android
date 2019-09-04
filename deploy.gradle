@@ -2,9 +2,11 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
 // Use this command to deploy everything in this project:
-//     ./gradlew assembleRelease artifactoryPublish
+//     ./gradlew assembleRelease
+//     ./gradlew artifactoryPublish
 // And this command to deploy a specific module in this project:
-//     ./gradlew :module_name:assembleRelease :module_name:artifactoryPublish
+//     ./gradlew :module_name:assembleRelease
+//     ./gradlew :module_name:artifactoryPublish
 
 def resolved_artifactory_username = ""
 def resolved_artifactory_password = ""
@@ -17,6 +19,23 @@ else
 {
     logger.error('Unable to find Artifactory credentials. Publishing will not be possible.')
 }
+
+task androidJavadocs(type: Javadoc) {
+
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+    android.libraryVariants.all { variant ->
+        owner.classpath += variant.javaCompileProvider.get().classpath
+    }
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
 
 publishing {
     publications {
@@ -33,7 +52,7 @@ publishing {
 
                     // Skip android support libraries.
                     if (it.moduleGroup == 'com.android.support')
-                        return;
+                        return
 
                     def dependency = dependencies.appendNode('dependency')
                     // For local dependencies (compile project(...)) the version number will be
@@ -56,6 +75,7 @@ publishing {
     }
 }
 
+
 artifactory {
     contextUrl = 'http://artifactory.steinwurf.com/artifactory'
     publish {
@@ -70,18 +90,4 @@ artifactory {
             publishPom = true
         }
     }
-}
-
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-
-    android.libraryVariants.all { variant ->
-        owner.classpath += variant.javaCompile.classpath
-    }
-}
-
-task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-    classifier = 'javadoc'
-    from androidJavadocs.destinationDir
 }
