@@ -14,7 +14,8 @@ Usage
 -----
 To depend on mediaplayer-android will need add the jitpack.io repository in the
 project build.gradle file:
-```
+
+.. code-block::
     allprojects {
         repositories {
             jcenter()
@@ -22,10 +23,11 @@ project build.gradle file:
             // ...
         }
     }
-```
+
 And the mediaplayer-android dependency to your module dependency scope:
-```
+
+
+.. code-block::
     dependencies {
         implementation 'com.github.steinwurf:mediaplayer-android:8.1.2'
     }
-```
