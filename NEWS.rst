@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+8.1.1
+-----
+* Patch: Fix build.
+
 8.1.0
 -----
 * Minor: Fix license.
