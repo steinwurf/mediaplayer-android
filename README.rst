@@ -12,7 +12,7 @@ supported.
 
 Usage
 -----
-To depend on mediaplayer-android will need add the jitpack.io repository in the
+To depend on mediaplayer-android you will need add the jitpack.io repository in the
 project build.gradle file:
 
 .. code-block::
@@ -25,7 +25,7 @@ project build.gradle file:
         }
     }
 
-And the mediaplayer-android dependency to your module dependency scope:
+And then add the mediaplayer-android dependency to your module's dependencies scope:
 
 
 .. code-block::
