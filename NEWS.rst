@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+8.1.2
+-----
+* Patch: Fix jitpack.io.
+
 8.1.1
 -----
 * Patch: Fix build.
